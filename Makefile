@@ -2,7 +2,7 @@ CC=cc
 FLAGS=-Wall -Wextra -Werror -g
 DEPS=srcs/main.o $(patsubst %.c, %.o, $(wildcard lib/*.c))
 
-a.out: $(DEPS)
+raycaster: $(DEPS)
 	$(CC) $^ -o $@ -lm
 
 %.o: %.c includes/*.h
@@ -10,5 +10,5 @@ a.out: $(DEPS)
 
 fclean:
 	find . -name "*.o" -delete
-	rm a.out
+	rm raycaster
 

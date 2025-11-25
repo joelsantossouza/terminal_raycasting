@@ -36,6 +36,7 @@ int main(int argc, char **argv)
 
 	screen = createScreen(150, 100, FOV, brightness);
 
+	printf("Press any key to start\n");
 	while (1)
 	{
 		if (!moveCamera(&camera, key, map))
