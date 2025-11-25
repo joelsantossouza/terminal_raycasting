@@ -3,7 +3,7 @@ FLAGS=-Wall -Wextra -Werror -g
 DEPS=srcs/main.o $(patsubst %.c, %.o, $(wildcard lib/*.c))
 
 a.out: $(DEPS)
-	$(CC) $(FLAGS) $^ -o $@ -lm
+	$(CC) $^ -o $@ -lm
 
 %.o: %.c includes/*.h
 	$(CC) $(FLAGS) -c $< -o $@ -I includes

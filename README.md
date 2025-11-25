@@ -1,79 +1,168 @@
-# Terminal Raycasting
-#### Video Demo: https://youtu.be/Y5R43J6mi88
+# 🎮 Terminal Raycasting
 
-#### Description:
-In this project, my goal was achieve a mini raycasting game, running on terminal,
-where the color and the light of each pixel would be determined for the color and
-the density of a character. To do that my program is divided in 3 general parts.
+A mini raycasting game engine that runs entirely in the terminal, featuring ASCII-based 3D rendering with dynamic lighting and shadows.
 
-Map
-The map consist of a bidimensional matrix of ints, where 0 represent empty spaces
-and 1 represent walls. Basically, the player can walk in empty spaces but can't
-walk throught walls. This concept represent the 2D format of the game.
+[![Video Demo](https://img.shields.io/badge/▶️-Watch%20Demo-red?style=for-the-badge&logo=youtube)](https://youtu.be/Y5R43J6mi88)
 
-Rays
-The player has rays that calculate the distance of the closest wall in his
-repective direction. To do that, is made a loop while is not found a wall
-in the current position checked.
+## 🌟 Overview
 
-3D Projection
-To do the 3D projection, is used the distance of each ray to determine if
-the wall should be printed smaller or bigger. It happens because closest
-thing in field of view looks bigger and far away things look smaller.
-With that, is applied too, the concept that far away produces more shadow
-and closest produce clearer
+This project implements a 3D raycasting engine in the terminal, where each pixel's color and brightness is determined by ASCII character density. The rendering creates the illusion of depth using:
 
+- **Character density** for brightness gradients
+- **Distance-based scaling** for perspective
+- **Dynamic shadows** that intensify with distance
 
-**Map.c -**
-In this file, has the proper functions to handle creation of maps matrix, printing 
-2D matrix in terminal and a function that import a map reading a file. The importMap
-function accept only file maps that contains the same number of elements in each
-line. Each map has a width, height, data and tilesize, that is the size of each grid
-of the map. So the map is divided by blocks of size tilesize X tilesize. In the creation
-function, is allocated data to the map, so the programmer should use the function freeMap
-after using the variable.
+## 🏗️ Architecture
 
-**Camera.c -**
-This file have the functions to create a camera, rays, determine the rays based on
-a field of view of a camera and put the camera position in a map. One of the most
-important part of this file is the raycasting function, where it calculate the length
-of a ray. To calculate the ray length I used the following algorithm:
-    - First we get the current camera position. Then check direction that the player is looking
-    - In the player's direction we get the next position of the closest tilesize grid, 
-    because if the map is made by blocks, a wall can appear in each block of the map
-    - Then we check if the current block position is a wall. if it is, so we stop the loop
-    and calculate the distance of the ray using the hypotenuse
-    sqrt(cathetus1 * cathetus1 + cathetus2 * cathetus2)
-    - This value is stored in a array of rays of the camera, and then, is done the same thing
-    to the other rays
+The project is structured into three core systems:
 
-**Screen.c -**
-Provide the structure of a screen, where can display a 3D projection of a 2D map
-getting the ray's len. To do that, each ray length is draw in the screen as a line
-but in a perspective format. To give the perspective, is done the following calculumn:
-WallSize * RayLen / PlaneDist. The WallSize, represent how tall the walls is going to look,
-and the PlaneDist, is the distance of the camera and the actual plane that is going to be
-the screen that we are looking at.
+### 1. 2D Map System
+A bidimensional matrix where:
+- `0` = Empty space (walkable)
+- `1` = Wall (solid)
 
-**Move.c -**
-This file have the structure of keyboard keys to move a player of a camera. It consist of
-a UP, LEFT, DOWN, RIGHT characters to be able to move the player, where UP and DOWN moves
-the camera/player to forward and backwards, and the RIGHT AND LEFT moves rotate the player.
-The move() function permita that a camera/player move in a 2D map provided.
-If the motion exceeds the map limits or hit a wall, the motion is not done.
+The player navigates this 2D grid, which serves as the foundation for 3D projection.
 
-**Pixel.c -**
-Create pixels representation using characters scale of density to luminosity
-and escape character '\e' to print colored characters in terminal. It provides too
-a brightness structure, that have a scale variable to user pass a
-gradual increasing character's density string to represent the gradual lighting.
-This structure have a brightness vision that is how dark the camera vision is going
-to be.
+### 2. Raycasting Engine
+The player emits rays that calculate distances to the nearest wall in each direction. Each ray traverses the map until it hits a wall, recording the distance traveled.
 
-**Split.c -**
-I created a split function to handle importation of maps in files, where the split 
-function returns a array of strings that was splited by a determined delimiter.
+### 3. 3D Projection
+Transforms 2D ray distances into 3D visuals using perspective mathematics:
+- **Closer objects** → Rendered larger and brighter
+- **Distant objects** → Rendered smaller and darker
 
-**Point.c -**
-That is the base file of my project that is used from all of others. It provides the 
-point structure and all creation, arithmetics, calculation of lines, and others.
+## 📁 Project Structure
+
+### **`map.c`**
+Handles map creation and management.
+
+**Key Functions:**
+- Map matrix creation and initialization
+- 2D map rendering in terminal
+- File-based map import (validates uniform line lengths)
+
+**Map Properties:**
+- `width`, `height` - Map dimensions
+- `data` - Integer matrix
+- `tilesize` - Grid cell dimensions
+
+> **Memory Management:** Always call `freeMap()` after use to prevent leaks.
+
+### **`camera.c`**
+Manages camera positioning, field of view, and raycasting logic.
+
+**Raycasting Algorithm:**
+1. Get current camera position and direction
+2. Find next grid boundary in the viewing direction
+3. Check if current block contains a wall
+4. If wall detected, calculate distance using Pythagorean theorem:
+   ```
+   distance = √(cathetus1² + cathetus2²)
+   ```
+5. Store distance in camera's ray array
+6. Repeat for all rays in FOV
+
+### **`screen.c`**
+Renders the 3D projection from ray data.
+
+**Perspective Formula:**
+```
+WallHeight = (WallSize × RayLength) / PlaneDistance
+```
+
+Where:
+- `WallSize` - Base wall height
+- `PlaneDistance` - Camera-to-screen distance
+- `RayLength` - Distance to wall from camera
+
+### **`move.c`**
+Implements player movement and collision detection.
+
+**Controls:**
+- `UP/DOWN` - Move forward/backward
+- `LEFT/RIGHT` - Rotate camera
+
+**Features:**
+- Boundary collision detection
+- Wall collision prevention
+- Smooth rotation mechanics
+
+### **`pixel.c`**
+ASCII rendering system with dynamic lighting.
+
+**Components:**
+- Character density scale for brightness gradients
+- ANSI escape sequences for terminal colors
+- Brightness vision system for ambient lighting control
+
+Example density scale (dark → light):
+```
+" .:-=+*#%@"
+```
+
+### **`split.c`**
+String tokenization utility for map file parsing.
+
+Splits strings by delimiter and returns an array of substrings for map import operations.
+
+### **`point.c`**
+Foundation geometry module used across the entire project.
+
+**Provides:**
+- Point structure definition
+- Vector arithmetic operations
+- Line calculations
+- Distance and angle computations
+
+## 🎯 How It Works
+
+1. **Map Loading:** Import or create a 2D grid map
+2. **Ray Emission:** Camera shoots rays across its field of view
+3. **Distance Calculation:** Each ray measures distance to nearest wall
+4. **3D Rendering:** Distances are converted to wall heights with perspective
+5. **Lighting:** ASCII characters create depth through density-based shading
+6. **Movement:** Player navigates with collision detection
+
+## 🚀 Getting Started
+
+### Prerequisites
+- C compiler (GCC/Clang)
+- Terminal with ANSI color support
+- Make (optional)
+
+### Building
+```bash
+make
+```
+
+### Running
+```bash
+./raycaster [map_file]
+```
+
+## 🎨 Technical Highlights
+
+- **Pure Terminal Rendering** - No graphics libraries required
+- **Real-time Raycasting** - Efficient distance calculations
+- **Dynamic Lighting** - Distance-based shadow gradients
+- **Collision System** - Prevents clipping through walls
+- **Modular Design** - Clean separation of concerns
+
+## 📖 Map Format
+
+Create custom maps using text files:
+```
+1 1 1 1 1
+1 0 0 0 1
+1 0 1 0 1
+1 0 0 0 1
+1 1 1 1 1
+```
+
+**Requirements:**
+- Uniform line lengths (same number of elements per row)
+- `0` for empty space, `1` for walls
+
+---
+
+*Bringing retro 3D graphics to your terminal.*

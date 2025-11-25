@@ -143,7 +143,7 @@ void make3DVision(t_camera camera, t_screen screen, unsigned int wallHeight, int
 	while (camera.nrays-- && (dimension.y = -1))
 	{
 		line.y = round((double) wallHeight / camera.rays[camera.nrays].len * screen.planeDist);
-		pixel = createPixel(RED, getBrightness(luminosity, screen.brightness, camera.rays[camera.nrays]));
+		pixel = createPixel(BLUE, getBrightness(luminosity, screen.brightness, camera.rays[camera.nrays]));
 		p1.y = screen.height / 2 - line.y / 2;
 		p2.y = p1.y + line.y;
 		while (++dimension.y < line.x)
