@@ -7,7 +7,7 @@
 #define ANGLE TO_RAD(275)
 #define FOV TO_RAD(60)
 
-int main(void)
+int main(int argc, char **argv)
 {
 	t_map map;
 	t_camera camera;
@@ -17,8 +17,13 @@ int main(void)
 	t_screen screen;
 	t_dpoint vision;
 
+	if (argc != 2)
+	{
+		fprintf(stderr, "Usage: %s <map_file>\n", *argv);
+		return (1);
+	}
 	stdInitTerminal();
-	importMap(&map, 100, "maps/map1.txt", 1024);
+	importMap(&map, 100, argv[1], 1024);
 
 	center = createPoint(1*map.tilesize+1, 1*map.tilesize+1);
 
