@@ -2,7 +2,7 @@
 
 A mini raycasting game engine that runs entirely in the terminal, featuring ASCII-based 3D rendering with dynamic lighting and shadows.
 
-<img width="1920" height="1080" alt="Image" src="https://github.com/user-attachments/assets/a40e43d2-d54e-42cb-bac2-995aa920456d" />
+<img width="1920" height="1080" alt="Image" src="https://github.com/user-attachments/assets/7fc5707e-5f77-4b85-b622-93aa031612d0" />
 
 [![Video Demo](https://img.shields.io/badge/▶️-Watch%20Demo-red?style=for-the-badge&logo=youtube)](https://youtu.be/Y5R43J6mi88)
 
